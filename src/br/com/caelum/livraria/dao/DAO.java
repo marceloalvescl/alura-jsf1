@@ -11,7 +11,7 @@ import br.com.caelum.livraria.modelo.Livro;
 
 public class DAO<T> {
 
-	private final Class<T> classe;
+	protected final Class<T> classe;
 
 	public DAO(Class<T> classe) {
 		this.classe = classe;
@@ -74,6 +74,7 @@ public class DAO<T> {
 			Livro livro = (Livro)instancia;
 			Query q = em.createNativeQuery("SELECT autores_id FROM livro_autor WHERE Livro_id = :id")
 								.setParameter("id", livro.getId());
+			@SuppressWarnings("unchecked")
 			List<Integer> lista = q.getResultList();
 			for (Integer i : lista) {
 				livro.adicionaAutor(new DAO<Autor>(Autor.class).buscaPorId(i));
