@@ -31,5 +31,10 @@ public class LoginBean {
 		
 		return new RedirectView("livro");
 	}
+	
+	public RedirectView cadastrarUsuario() {
+		new UsuarioDAO().adiciona(usuario);
+		return new RedirectView("login");
+	}
 
 }

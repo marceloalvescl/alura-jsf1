@@ -5,9 +5,10 @@ import javax.persistence.Query;
 
 import br.com.caelum.livraria.modelo.Usuario;
 
-public class UsuarioDAO {
+public class UsuarioDAO extends DAO<Usuario> {
 
 	public UsuarioDAO() {
+		super(Usuario.class);
 	}
 
 	public boolean buscaPorEmailESenha(String email, String senha) {

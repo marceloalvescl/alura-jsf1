@@ -26,8 +26,7 @@
 					<h:inputSecret id="senha" value="#{loginBean.usuario.senha}" required="true">
 					</h:inputSecret>
 					<h:message for="senha" />
-					<h:commandButton value="Cadastrar novo usuario" action="cadastrarUsuario.xhtml" immediate="true"></h:commandButton>
-					<h:commandButton value="Efetuar login" action="#{loginBean.efetuaLogin}"></h:commandButton>
+					<h:commandButton value="Cadastrar usuario" action="#{loginBean.cadastrarUsuario}"></h:commandButton>
 				</h:panelGrid>
 			</fieldset>
 		</h:form>
