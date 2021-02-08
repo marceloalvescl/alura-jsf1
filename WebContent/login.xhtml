@@ -12,10 +12,11 @@
 	</ui:define>
 	
 	<ui:define name="conteudo">
+		
 		<h:form id="login">
 			<legend>Login</legend>
 			<fieldset>
-				<h:messages></h:messages>
+				<h:messages globalOnly="true"></h:messages>
 				<h:panelGrid columns="3">
 					<h:outputLabel value="Email: " for="email"></h:outputLabel>
 					<h:inputText id="email" value="#{loginBean.usuario.email}" required="true">
@@ -33,7 +34,7 @@
 		</h:form>
 	</ui:define>
 	<ui:define name="rodape">
-		Novo Autor
+		Login
 	</ui:define>
 </ui:composition>
 </html>

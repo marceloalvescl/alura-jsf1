@@ -6,7 +6,11 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <ui:composition template="_template.xhtml">
-	<ui:define name="titulo">Novo Livro</ui:define>
+	<ui:define name="titulo">
+		<h:outputText value="#{sessionScope['usuario'].email}" />
+		<br />
+		Novo Livro
+	</ui:define>
 	<ui:define name="conteudo">
 		<h:form>
 			<h:messages id="messages" />
@@ -53,21 +57,23 @@
 					</h:commandButton>
 					<h:commandLink value="Cadastrar novo autor"
 						action="#{livroBean.formAutor}" immediate="true" />
-					<br/>
+					<br />
 					<h:dataTable value="#{livroBean.autoresDoLivro}" var="autor"
 						id="tabelaAutores">
 						<h:column>
 							<h:outputText value="#{autor.nome}" />
 						</h:column>
 						<h:column>
-							<h:commandButton value="Excluir" action="#{livroBean.removerAutorDoLivro(autor)}"/>
+							<h:commandButton value="Excluir"
+								action="#{livroBean.removerAutorDoLivro(autor)}" />
 						</h:column>
 					</h:dataTable>
 				</h:panelGrid>
 			</fieldset>
 
 			<h:commandButton value="Gravar" action="#{livroBean.gravar}">
-				<f:ajax execute="@form" render="@form :formListaERemoveLivros:tabelaLivros"></f:ajax>
+				<f:ajax execute="@form"
+					render="@form :formListaERemoveLivros:tabelaLivros"></f:ajax>
 			</h:commandButton>
 		</h:form>
 		<h:form id="formListaERemoveLivros">
@@ -77,7 +83,7 @@
 					<f:facet name="header">Título</f:facet>
 					<h:outputText value="#{livro.titulo}" />
 				</h:column>
-				
+
 				<h:column>
 					<f:facet name="header">ISBN</f:facet>
 					<h:outputText value="#{livro.isbn}" />
@@ -95,13 +101,15 @@
 				</h:column>
 				<h:column>
 					<f:facet name="header">Remover</f:facet>
-					<h:commandButton value="Remover" action="#{livroBean.remover(livro)}">
+					<h:commandButton value="Remover"
+						action="#{livroBean.remover(livro)}">
 						<!-- f:param value="#{livro.id}" name="idLivro"></f:param -->
 					</h:commandButton>
 				</h:column>
 				<h:column>
 					<f:facet name="header">Editar</f:facet>
-					<h:commandButton value="Editar" action="#{livroBean.alterar(livro)}">
+					<h:commandButton value="Editar"
+						action="#{livroBean.alterar(livro)}">
 						<!-- f:param value="#{livro.id}" name="idLivro"></f:param -->
 					</h:commandButton>
 				</h:column>

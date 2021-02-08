@@ -9,6 +9,9 @@
 	<h:body>
 		<div id="cabecalho">
 			<h:graphicImage library="img" name="logo.png"></h:graphicImage>
+			<h:form rendered="#{usuario != null}" id="logout">
+				<h:commandButton value="Logout" action="#{loginBean.logout}"/>
+			</h:form>
 			<h1><ui:insert name="titulo"></ui:insert></h1>
 		</div>
 		<div id="conteudo">

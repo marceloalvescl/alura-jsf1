@@ -18,18 +18,29 @@ public class LoginBean {
 	public Usuario getUsuario() {
 		return this.usuario;
 	}
-
-	public RedirectView efetuaLogin() {
-		System.out.println("Efetuando login para email: " + usuario.getEmail() + " e senha: " + usuario.getSenha());
-		
-		boolean existe = new UsuarioDAO().buscaPorEmailESenha(usuario.getEmail(), usuario.getSenha());
-		
-		if(!existe) {
-			FacesContext.getCurrentInstance().addMessage("login", new FacesMessage("Usuário ou senha incorretos"));
+	
+	public RedirectView logout() {
+		if(usuario == null) {
 			return new RedirectView("");
 		}
+
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("usuario");
+		// FacesContext.getCurrentInstance().getExternalContext().getSessionMap().clear();
 		
-		return new RedirectView("livro");
+		return new RedirectView("login");
+	}
+
+	public RedirectView efetuaLogin() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		boolean existe = new UsuarioDAO().buscaPorEmailESenha(usuario.getEmail(), usuario.getSenha());
+		
+		if(existe) {
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuario", usuario);
+			return new RedirectView("livro");
+		}
+		context.getExternalContext().getFlash().setKeepMessages(true);
+		context.addMessage(null, new FacesMessage("Usuário ou senha incorretos"));
+		return new RedirectView("");
 	}
 	
 	public RedirectView cadastrarUsuario() {
