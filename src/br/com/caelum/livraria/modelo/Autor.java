@@ -1,5 +1,7 @@
 package br.com.caelum.livraria.modelo;
 
+import java.util.HashSet;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,7 +14,8 @@ public class Autor{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
-	
+	private String email;
+
 	public Autor() {
 		
 	}
@@ -37,7 +40,13 @@ public class Autor{
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	
-	
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	
 }
