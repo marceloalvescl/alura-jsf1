@@ -1,31 +1,31 @@
 package br.com.caelum.livraria.dao;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 
 import br.com.caelum.livraria.modelo.Usuario;
 
-public class UsuarioDAO extends DAO<Usuario> {
+public class UsuarioDao {
 
-	public UsuarioDAO() {
-		super(Usuario.class);
-	}
-
-	public boolean buscaPorEmailESenha(String email, String senha) {
+	public boolean existe(Usuario usuario) {
 		
 		EntityManager em = new JPAUtil().getEntityManager();
+		TypedQuery<Usuario> query = em.createQuery(
+				  " select u from Usuario u "
+				+ " where u.email = :pEmail and u.senha = :pSenha", Usuario.class);
+		
+		query.setParameter("pEmail", usuario.getEmail());
+		query.setParameter("pSenha", usuario.getSenha());
 		try {
-			Query q = em.createNativeQuery("SELECT * FROM usuario WHERE email = :email AND senha = :senha ;")
-					.setParameter("email", email).setParameter("senha", senha);
-			q.getSingleResult();	
-		}catch(Exception e) {
+			Usuario resultado =  query.getSingleResult();
+		} catch (NoResultException ex) {
 			return false;
-		}finally {
-			em.close();
 		}
 		
-		return true;
+		em.close();
 		
+		return true;
 	}
 
 }

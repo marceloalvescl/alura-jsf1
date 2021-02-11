@@ -1,51 +1,45 @@
 package br.com.caelum.livraria.modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 @Entity
-public class Livro {
+public class Livro implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private Integer id;
+
 	private String titulo;
 	private String isbn;
 	private double preco;
 	@Temporal(TemporalType.DATE)
 	private Calendar dataLancamento = Calendar.getInstance();
-	
-	@ManyToMany(fetch = FetchType.EAGER)
+
+	@ManyToMany(fetch=FetchType.EAGER)
 	private List<Autor> autores = new ArrayList<Autor>();
-	
-	public void adicionaAutor(Autor autor) {
-		this.autores.add(autor);
-	}
-	
+
 	public List<Autor> getAutores() {
 		return autores;
 	}
-	
-	public void removeAutor(Autor autor) {
-		this.autores.remove(autor);
-	}
-	
-	public Livro() {
 
+	public void adicionaAutor(Autor autor) {
+		this.autores.add(autor);
+	}
+
+	public Livro() {
 	}
 
 	public Integer getId() {
@@ -54,22 +48,6 @@ public class Livro {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public Livro(String nome, String isbn, double preco, Calendar dataLancamento) {
-		super();
-		this.titulo = nome;
-		this.isbn = isbn;
-		this.preco = preco;
-		this.dataLancamento = dataLancamento;
-	}
-	
-	public Calendar getDataLancamento() {
-		return dataLancamento;
-	}
-
-	public void setDataLancamento(Calendar dataLancamento) {
-		this.dataLancamento = dataLancamento;
 	}
 
 	public String getTitulo() {
@@ -96,6 +74,16 @@ public class Livro {
 		this.preco = preco;
 	}
 
+	public Calendar getDataLancamento() {
+		return dataLancamento;
+	}
 
+	public void setDataLancamento(Calendar dataLancamento) {
+		this.dataLancamento = dataLancamento;
+	}
+
+	public void removeAutor(Autor autor) {
+		this.autores.remove(autor);
+	}
 
 }

@@ -5,47 +5,38 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import br.com.caelum.livraria.dao.UsuarioDAO;
+import br.com.caelum.livraria.dao.UsuarioDao;
 import br.com.caelum.livraria.modelo.Usuario;
-import br.com.caelum.livraria.util.RedirectView;
 
-@ViewScoped
 @ManagedBean
+@ViewScoped
 public class LoginBean {
 
 	private Usuario usuario = new Usuario();
 
 	public Usuario getUsuario() {
-		return this.usuario;
+		return usuario;
 	}
 	
-	public RedirectView logout() {
-		if(usuario == null) {
-			return new RedirectView("");
-		}
-
-		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("usuario");
-		// FacesContext.getCurrentInstance().getExternalContext().getSessionMap().clear();
+	public String efetuaLogin() {
+		System.out.println("fazendo login do usuario " + this.usuario.getEmail());
 		
-		return new RedirectView("login");
-	}
-
-	public RedirectView efetuaLogin() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		boolean existe = new UsuarioDAO().buscaPorEmailESenha(usuario.getEmail(), usuario.getSenha());
-		
-		if(existe) {
-			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuario", usuario);
-			return new RedirectView("livro");
+		boolean existe = new UsuarioDao().existe(this.usuario);
+		if(existe ) {
+			context.getExternalContext().getSessionMap().put("usuarioLogado", this.usuario);
+			return "livro?faces-redirect=true";
 		}
+		
 		context.getExternalContext().getFlash().setKeepMessages(true);
-		context.addMessage(null, new FacesMessage("Usuário ou senha incorretos"));
-		return new RedirectView("");
+		context.addMessage(null, new FacesMessage("Usuário não encontrado"));
+		
+		return "login?faces-redirect=true";
 	}
 	
-	public RedirectView cadastrarUsuario() {
-		new UsuarioDAO().adiciona(usuario);
-		return new RedirectView("login");
+	public String deslogar() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().remove("usuarioLogado");
+		return "login?faces-redirect=true";
 	}
-
 }

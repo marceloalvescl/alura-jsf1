@@ -1,5 +1,6 @@
 package br.com.caelum.livraria.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -12,92 +13,108 @@ import javax.faces.validator.ValidatorException;
 import br.com.caelum.livraria.dao.DAO;
 import br.com.caelum.livraria.modelo.Autor;
 import br.com.caelum.livraria.modelo.Livro;
-import br.com.caelum.livraria.util.ForwardView;
-import br.com.caelum.livraria.util.RedirectView;
 
 @ManagedBean
 @ViewScoped
-public class LivroBean{
-	
+public class LivroBean implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private Livro livro = new Livro();
+
 	private Integer autorId;
-	
+
+	private List<Livro> livros;
+
 	public void setAutorId(Integer autorId) {
 		this.autorId = autorId;
 	}
-	
+
 	public Integer getAutorId() {
-		return this.autorId;
+		return autorId;
 	}
-	
+
 	public Livro getLivro() {
-		return this.livro;
+		return livro;
 	}
-	
-	public List<Livro> getLivros(){
-		return new DAO<Livro>(Livro.class).listaTodos();
+
+	public List<Livro> getLivros() {
+		
+		DAO<Livro> dao = new DAO<Livro>(Livro.class);
+		
+		if(this.livros == null) {
+			this.livros = dao.listaTodos();			
+		}
+		
+		return livros;
 	}
-	
-	public List<Autor> getAutores(){
+
+	public List<Autor> getAutores() {
 		return new DAO<Autor>(Autor.class).listaTodos();
 	}
-	
-	public void removeAutor(Autor autor) {
-		this.getAutores().remove(autor);
+
+	public List<Autor> getAutoresDoLivro() {
+		return this.livro.getAutores();
 	}
-	
-	public List<Autor> getAutoresDoLivro(){
-		return livro.getAutores();
+
+	public void carregarLivroPelaId() {
+		this.livro = new DAO<Livro>(Livro.class).buscaPorId(this.livro.getId()); 
 	}
 	
 	public void gravarAutor() {
 		Autor autor = new DAO<Autor>(Autor.class).buscaPorId(this.autorId);
 		this.livro.adicionaAutor(autor);
-		System.out.println("Gravando autor: " + autor.getNome());
+		System.out.println("Escrito por: " + autor.getNome());
 	}
-	
-	public String formAutor() {
-		return "autor?faces-redirect=true";
-	}
-	
-	public ForwardView gravar() throws Exception{
-		System.out.println("Gravando autor");
-		
-		if(livro.getAutores().isEmpty()) {
-			//throw new Exception("Livro deve possuir autor");
-			FacesContext.getCurrentInstance().addMessage("autor", new FacesMessage("Livro deve possuir autor"));
+
+	public void gravar() {
+		System.out.println("Gravando livro " + this.livro.getTitulo());
+
+		if (livro.getAutores().isEmpty()) {
+			FacesContext.getCurrentInstance().addMessage("autor",
+					new FacesMessage("Livro deve ter pelo menos um Autor."));
+			return;
 		}
+
+		DAO<Livro> dao = new DAO<Livro>(Livro.class);
 		
-		if(livro.getId() == null) {
-			new DAO<Livro>(Livro.class).adiciona(livro);	
-		}else {
-			new DAO<Livro>(Livro.class).atualiza(livro);
+		if(this.livro.getId() == null) {
+			dao.adiciona(this.livro);
+			this.livros = dao.listaTodos();
+		} else {
+			dao.atualiza(this.livro);
 		}
-		
-		
-		
+
 		this.livro = new Livro();
-		return new ForwardView("livro");
+	}
+
+	public void remover(Livro livro) {
+		System.out.println("Removendo livro");
+		new DAO<Livro>(Livro.class).remove(livro);
 	}
 	
 	public void removerAutorDoLivro(Autor autor) {
-		this.livro.removeAutor(autor);		
+		this.livro.removeAutor(autor);
 	}
 	
-	public void comecaComDigitoUm(FacesContext fc, UIComponent component, Object value) throws ValidatorException {
-		String valor = value.toString();
-		if(!valor.startsWith("1")) {
-			throw new ValidatorException(new FacesMessage("ISBN deve começar com 1"));
-		}
-	}
-	
-	public RedirectView remover(Livro livro) {
-		new DAO<Livro>(Livro.class).remove(livro);
-		return new RedirectView("livro");
-	}
-	
-	public void alterar(Livro livro) {
+	public void carregar(Livro livro) {
+		System.out.println("Carregando livro");
 		this.livro = livro;
 	}
 	
+	public String formAutor() {
+		System.out.println("Chamanda do formulário do Autor.");
+		return "autor?faces-redirect=true";
+	}
+
+	public void comecaComDigitoUm(FacesContext fc, UIComponent component,
+			Object value) throws ValidatorException {
+
+		String valor = value.toString();
+		if (!valor.startsWith("1")) {
+			throw new ValidatorException(new FacesMessage(
+					"ISBN deveria começar com 1"));
+		}
+
+	}
 }

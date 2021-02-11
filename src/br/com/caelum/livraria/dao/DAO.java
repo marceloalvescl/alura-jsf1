@@ -3,15 +3,11 @@ package br.com.caelum.livraria.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
-
-import br.com.caelum.livraria.modelo.Autor;
-import br.com.caelum.livraria.modelo.Livro;
 
 public class DAO<T> {
 
-	protected final Class<T> classe;
+	private final Class<T> classe;
 
 	public DAO(Class<T> classe) {
 		this.classe = classe;
@@ -69,17 +65,6 @@ public class DAO<T> {
 	public T buscaPorId(Integer id) {
 		EntityManager em = new JPAUtil().getEntityManager();
 		T instancia = em.find(classe, id);
-
-		if(instancia.getClass().equals(Livro.class)) {
-			Livro livro = (Livro)instancia;
-			Query q = em.createNativeQuery("SELECT autores_id FROM livro_autor WHERE Livro_id = :id")
-								.setParameter("id", livro.getId());
-			@SuppressWarnings("unchecked")
-			List<Integer> lista = q.getResultList();
-			for (Integer i : lista) {
-				livro.adicionaAutor(new DAO<Autor>(Autor.class).buscaPorId(i));
-			}
-		}
 		em.close();
 		return instancia;
 	}
