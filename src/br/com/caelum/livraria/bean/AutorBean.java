@@ -8,6 +8,7 @@ import javax.inject.Named;
 
 import br.com.caelum.livraria.dao.AutorDao;
 import br.com.caelum.livraria.modelo.Autor;
+import br.com.caelum.livraria.tx.Transactional;
 
 @Named
 @javax.faces.view.ViewScoped
@@ -36,6 +37,7 @@ public class AutorBean implements Serializable {
 		this.autor = this.dao.buscaPorId(autorId);
 	}
 
+	@Transactional
 	public String gravar() {
 		System.out.println("Gravando autor " + this.autor.getNome());
 
@@ -49,7 +51,8 @@ public class AutorBean implements Serializable {
 
 		return "livro?faces-redirect=true";
 	}
-	
+
+	@Transactional
 	public void remover(Autor autor) {
 		System.out.println("Removendo autor " + autor.getNome());
 		this.dao.remove(autor);
