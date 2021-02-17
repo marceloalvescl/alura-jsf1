@@ -8,7 +8,7 @@ import javax.persistence.criteria.CriteriaQuery;
 
 public class DAO<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private final Class<T> classe;
 	private EntityManager em;
 
@@ -35,7 +35,7 @@ public class DAO<T> implements Serializable {
 		List<T> lista = em.createQuery(query).getResultList();
 		return lista;
 	}
-
+	
 	public T buscaPorId(Integer id) {
 		T instancia = em.find(classe, id);
 		return instancia;

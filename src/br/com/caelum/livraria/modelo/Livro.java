@@ -86,4 +86,9 @@ public class Livro implements Serializable {
 		this.autores.remove(autor);
 	}
 
+	@Override
+	public String toString() {
+		return titulo;
+	}
+
 }
