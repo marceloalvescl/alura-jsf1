@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.caelum.livraria.dao.UsuarioDao;
@@ -18,6 +19,11 @@ public class LoginBean implements Serializable {
 	
 	private Usuario usuario = new Usuario();
 
+	@Inject
+	FacesContext context;
+	@Inject
+	UsuarioDao dao;
+
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -25,8 +31,7 @@ public class LoginBean implements Serializable {
 	public String efetuaLogin() {
 		System.out.println("fazendo login do usuario " + this.usuario.getEmail());
 		
-		FacesContext context = FacesContext.getCurrentInstance();
-		boolean existe = new UsuarioDao().existe(this.usuario);
+		boolean existe = dao.existe(this.usuario);
 		if(existe ) {
 			context.getExternalContext().getSessionMap().put("usuarioLogado", this.usuario);
 			return "livro?faces-redirect=true";
@@ -39,7 +44,6 @@ public class LoginBean implements Serializable {
 	}
 	
 	public String deslogar() {
-		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().remove("usuarioLogado");
 		return "login?faces-redirect=true";
 	}
